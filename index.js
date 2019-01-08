@@ -34,7 +34,6 @@ class DropboxAdapter extends BaseAdapter {
           mode: "overwrite"
         })
         .then(function(response) {
-          console.log("response", response);
           _this.client
             .sharingCreateSharedLink({
               path: response.path_display,
