@@ -1,44 +1,36 @@
-"use strict";
+'use strict';
 
-const fs = require("fs");
-const moment = require("moment");
-const Url = require("url-parse");
-const BaseAdapter = require("ghost-storage-base");
-const fetch = require("isomorphic-fetch");
-const Dropbox = require("dropbox").Dropbox;
+const fs = require('fs');
+const moment = require('moment');
+const Url = require('url-parse');
+const BaseAdapter = require('ghost-storage-base');
+const fetch = require('isomorphic-fetch');
+const Dropbox = require('dropbox').Dropbox;
 
 class DropboxAdapter extends BaseAdapter {
   constructor(config = {}) {
     super(config);
 
     this.config = config;
-
-    this.client = new Dropbox({
-      accessToken: config.accessToken,
-      fetch
-    });
+    this.client = new Dropbox({ accessToken: config.accessToken, fetch });
   }
 
   save(file) {
     const _this = this;
-
     const date = moment();
-    const month = date.format("MM");
-    const year = date.format("YYYY");
+    const month = date.format('MM');
+    const year = date.format('YYYY');
 
     return new Promise(function(resolve, reject) {
       _this.client
         .filesUpload({
           path: `/${year}/${month}/${file.filename}${file.ext}`,
           contents: fs.createReadStream(file.path),
-          mode: "overwrite"
+          autorename: true,
         })
         .then(function(response) {
           _this.client
-            .sharingCreateSharedLink({
-              path: response.path_display,
-              short_url: false
-            })
+            .sharingCreateSharedLink({ path: response.path_display, short_url: false })
             .then(value => {
               const url = new Url(value.url);
 
@@ -46,12 +38,12 @@ class DropboxAdapter extends BaseAdapter {
               resolve(`${url.origin}${url.pathname}?raw=1`);
             })
             .catch(function(error) {
-              console.error("sharing link", error);
+              console.error('sharing link', error);
               reject(error);
             });
         })
         .catch(function(error) {
-          console.error("file upload", error);
+          console.error('file upload', error);
           reject(error);
         });
     });
