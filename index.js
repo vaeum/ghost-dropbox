@@ -51,7 +51,7 @@ class DropboxAdapter extends BaseAdapter {
             });
         })
         .catch(function(error) {
-          console.error("file upload", error.error.error.reason);
+          console.error("file upload", error);
           reject(error);
         });
     });
