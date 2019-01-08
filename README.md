@@ -8,7 +8,7 @@ In order to replace the storage module, the basic requirements are:
 
   ```
   cd [path/to/ghost]/content/adapters/storage
-  git clone https://github.com/vaeum/ghost-dropbox.git
+  git clone https://github.com/vaeum/ghost-dropbox.git dropbox
   ```
 
 - Install dependencies
